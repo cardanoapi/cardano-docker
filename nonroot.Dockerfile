@@ -26,12 +26,10 @@ RUN apt-get update -y && apt-get install -y \
   zlib1g-dev libreadline-dev  libnuma-dev \
   &&  if test  "$(arch)" = 'x86_64'; then  apt-get  install -y  llvm; fi &&  rm -rf /var/lib/apt/lists/*
 
-ARG CABAL_VERSION=3.6.2.0
-ARG GHC_VERSION=8.10.7
 ARG IOHK_LIBSODIUM_GIT_REV=66f017f16633f2060db25e17c170c2afa0f2a8a1
 ARG IOKH_LIBSECP251_GIT_REV=ac83be33d0956faf6b7f61a60ab524ef7d6a473a
 
-# install secp2561k library with prefix '/'
+# install secp2561k library with prefix '/usr'
 RUN git clone https://github.com/bitcoin-core/secp256k1 &&\
   cd secp256k1 \
   && git fetch --all --tags &&\
@@ -41,8 +39,7 @@ RUN git clone https://github.com/bitcoin-core/secp256k1 &&\
   make && \
   make install  && cd .. && rm -rf ./secp256k1
 
-
-# install libsodium from sources with prefix '/'
+# install libsodium from sources with prefix '/usr'
 RUN git clone https://github.com/input-output-hk/libsodium.git &&\
   cd libsodium \
   && git fetch --all --tags &&\
@@ -76,19 +73,24 @@ Libs: -L${libdir} -lblst\n\
   && cp libblst.a /usr/local/lib \
   && cd .. && rm -rf ./blst
 
-# install cabal
-RUN wget --secure-protocol=TLSv1_2 \
-  "https://downloads.haskell.org/~cabal/cabal-install-${CABAL_VERSION}/cabal-install-${CABAL_VERSION}-$(arch)-linux-deb10.tar.xz" && \
-  tar -xf *.tar.xz &&\
-  rm *.tar.xz &&\
-  mv cabal /usr/local/bin/
+# We create home folder for non-root user.
+RUN useradd -u 1001 -U  -d /haskell -m  haskell && mkdir -p /app && chown haskell:haskell /app
+WORKDIR /haskell
 
-# install ghc from sources
-WORKDIR /app/ghc
+USER  haskell
+
+ARG CABAL_VERSION=3.6.2.0
+ARG GHC_VERSION=8.10.7
+ENV PATH=${PATH}:${HOME:-/haskell}/.ghcup/bin
+
+# install ghcup
 RUN wget --secure-protocol=TLSv1_2 \
-  "https://downloads.haskell.org/~ghc/${GHC_VERSION}/ghc-${GHC_VERSION}-$(arch)-deb10-linux.tar.xz" &&\
-  tar -xf *.tar.xz &&\
-  rm *.tar.xz \
-  && cd /app/ghc/ghc-${GHC_VERSION} \
-  && ./configure && make install \
-  && cd .. && rm -rf /app/ghc/ghc-${GHC_VERSION}
+  https://downloads.haskell.org/~ghcup/$(arch)-linux-ghcup  \ 
+  && chmod +x $(arch)-linux-ghcup \
+  && mkdir -p ${HOME:-/haskell}/.ghcup/bin \
+  && mv $(arch)-linux-ghcup ${HOME:-/haskell}/.ghcup/bin/ghcup 
+
+RUN ghcup config set downloader Wget \
+  &&  ghcup install ghc ${GHC_VERSION} \
+  &&  ghcup install cabal ${CABAL_VERSION} \
+  && ghcup set ghc ${GHC_VERSION}
