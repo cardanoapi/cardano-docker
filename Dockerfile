@@ -23,8 +23,8 @@ RUN apt-get update -y && apt-get install -y \
   pkg-config \
   tmux \
   wget \
-  zlib1g-dev libreadline-dev  libnuma-dev \
-  &&  if test  "$(arch)" = 'x86_64'; then  apt-get  install -y  llvm; fi &&  rm -rf /var/lib/apt/lists/*
+  zlib1g-dev libreadline-dev  libnuma-dev  \
+  &&  if test  "$(arch)" != 'x86_64'; then  apt-get  install -y  llvm-12; fi &&  rm -rf /var/lib/apt/lists/*
 
 ARG CABAL_VERSION=3.6.2.0
 ARG GHC_VERSION=8.10.7
@@ -92,3 +92,4 @@ RUN wget --secure-protocol=TLSv1_2 \
   && cd /app/ghc/ghc-${GHC_VERSION} \
   && ./configure && make install \
   && cd .. && rm -rf /app/ghc/ghc-${GHC_VERSION}
+ENV PATH="${PATH}:/usr/lib/llvm-12/bin"
