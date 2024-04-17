@@ -89,7 +89,8 @@ RUN wget --secure-protocol=TLSv1_2 \
   "https://downloads.haskell.org/~ghc/${GHC_VERSION}/ghc-${GHC_VERSION}-$(arch)-deb10-linux.tar.xz" &&\
   tar -xf *.tar.xz &&\
   rm *.tar.xz \
-  && cd /app/ghc/ghc-${GHC_VERSION} \
+  && ls -la \
+  && cd "$(ls | grep ghc)" \
   && ./configure && make install \
-  && cd .. && rm -rf /app/ghc/ghc-${GHC_VERSION}
+  && cd .. && rm -rf ./*
 ENV PATH="${PATH}:/usr/lib/llvm-12/bin"

@@ -1,13 +1,24 @@
 name: pushImage
 
 on:
-  push:
-    branches:
-      - 'master'
+  workflow_dispatch:
+    inputs:
+      CABAL_VERSION:
+        description: 'The version of Cabal to use'
+        required: true
+        default: '3.4.0.0'
+      GHC_VERSION:
+        description: 'The version of GHC to use'
+        required: true
+        default: '8.10.7'
+
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      -
+        name: Checkout repository
+        uses: actions/checkout@v2
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -25,5 +36,10 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: cardanoapi/haskell:latest
+          tags: |
+            cardanoapi/haskell:${{ inputs.GHC_VERSION }}
+            cardanoapi/haskell:latest
           platforms: linux/amd64, linux/arm64
+          build-args: |
+            CABAL_VERSION=${{ inputs.CABAL_VERSION }}
+            GHC_VERSION=${{ inputs.GHC_VERSION }}
