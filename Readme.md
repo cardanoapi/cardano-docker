@@ -14,4 +14,4 @@ It includes libraries from ubuntu software channel and following extra libraries
   - `cardanoapi/haskell:9.6.1`
 
 ### Todos:
-- [ ] Make the image size smaller by remove libaries requierd for profiling 
+- [ ] Make the image size smaller by removing profiling libraries

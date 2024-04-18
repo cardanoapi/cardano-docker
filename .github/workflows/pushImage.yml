@@ -6,11 +6,19 @@ on:
       CABAL_VERSION:
         description: 'The version of Cabal to use'
         required: true
-        default: '3.4.0.0'
+        default: '3.10.3.0'
       GHC_VERSION:
         description: 'The version of GHC to use'
         required: true
-        default: '8.10.7'
+        default: '9.4.8'
+      PUSH_LATEST_TAG:
+        description: 'Push latest tag'
+        required: true
+        type: choice
+        default: 'no'
+        options:
+          - 'yes'
+          - 'no'
 
 jobs:
   docker:
@@ -33,13 +41,14 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: |
-            cardanoapi/haskell:${{ inputs.GHC_VERSION }}
-            cardanoapi/haskell:latest
-          platforms: linux/amd64, linux/arm64
-          build-args: |
-            CABAL_VERSION=${{ inputs.CABAL_VERSION }}
-            GHC_VERSION=${{ inputs.GHC_VERSION }}
+        id: docker_build
+        run: |
+          docker buildx build --push \
+            --platform linux/amd64,linux/arm64 \
+            --build-arg CABAL_VERSION=${{ inputs.CABAL_VERSION }} \
+            --build-arg GHC_VERSION=${{ inputs.GHC_VERSION }} \
+            -t cardanoapi/haskell:${{ inputs.GHC_VERSION }} .
+          if [ "${{ inputs.PUSH_LATEST_TAG }}" == "yes" ]; then
+            docker tag cardanoapi/haskell:${{ inputs.GHC_VERSION }} cardanoapi/haskell:latest
+            docker push cardanoapi/haskell:latest
+          fi

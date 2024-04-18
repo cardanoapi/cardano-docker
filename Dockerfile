@@ -26,8 +26,8 @@ RUN apt-get update -y && apt-get install -y \
   zlib1g-dev libreadline-dev  libnuma-dev  \
   &&  if test  "$(arch)" != 'x86_64'; then  apt-get  install -y  llvm-12; fi &&  rm -rf /var/lib/apt/lists/*
 
-ARG CABAL_VERSION=3.6.2.0
-ARG GHC_VERSION=8.10.7
+ARG CABAL_VERSION=3.10.3.0
+ARG GHC_VERSION=9.4.8
 ARG IOHK_LIBSODIUM_GIT_REV=66f017f16633f2060db25e17c170c2afa0f2a8a1
 ARG IOKH_LIBSECP251_GIT_REV=ac83be33d0956faf6b7f61a60ab524ef7d6a473a
 

@@ -79,8 +79,8 @@ WORKDIR /haskell
 
 USER  haskell
 
-ARG CABAL_VERSION=3.6.2.0
-ARG GHC_VERSION=8.10.7
+ARG CABAL_VERSION=3.10.3.0
+ARG GHC_VERSION=9.4.8
 ENV PATH=${PATH}:${HOME:-/haskell}/.ghcup/bin
 
 # install ghcup
