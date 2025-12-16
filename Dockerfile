@@ -67,7 +67,7 @@ includedir=${prefix}/include\n\
 Name: libblst\n\
 Description: Multilingual BLS12-381 signature library\n\
 URL: https://github.com/supranational/blst\n\
-Version: 0.3.10\n\
+Version: 0.3.14\n\
 Cflags: -I${includedir}\n\
 Libs: -L${libdir} -lblst\n\
 ' >libblst.pc &&  ls\ 
