@@ -55,7 +55,7 @@ RUN git clone https://github.com/input-output-hk/libsodium.git &&\
 # install libblst
 RUN git clone https://github.com/supranational/blst  \
   && cd blst \
-  && git checkout v0.3.10 \
+  && git checkout v0.3.14 \
   && ./build.sh \
   && echo  '\
 prefix=/usr/local\n\
