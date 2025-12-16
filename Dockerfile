@@ -9,6 +9,7 @@ RUN apt-get update -y && apt-get install -y \
   g++\
   git \
   jq \
+  liblmdb-dev \
   libicu-dev \
   libffi-dev \
   libgmp-dev \
