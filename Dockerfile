@@ -14,7 +14,7 @@ RUN apt-get update -y && apt-get install -y \
   libffi-dev \
   libgmp-dev \
   liblzma-dev \
-  libncursesw5 \
+  libncurses6 \
   libpq-dev \
   libssl-dev \
   libsystemd-dev \
