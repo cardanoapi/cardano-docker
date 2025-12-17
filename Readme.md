@@ -10,8 +10,10 @@ It includes libraries from ubuntu software channel and following extra libraries
 [View in DockerHub](https://hub.docker.com/r/cardanoapi/haskell)
 
 ### Available images:
-  - `cardanoapi/haskell:8.10.7`
-  - `cardanoapi/haskell:9.6.1`
+  - `cardanoapi/haskell:latest` (uses haskell v9.6.7)
+  - `cardanoapi/haskell:9.6.7`
+  - `cardanoapi/haskell:9.4.8`
 
 ### Todos:
 - [ ] Make the image size smaller by removing profiling libraries
+- [ ] nonroot.Dockerfile is not ready

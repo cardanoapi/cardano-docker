@@ -53,27 +53,30 @@ RUN git clone https://github.com/input-output-hk/libsodium.git &&\
   make && \
   make install  && cd .. && rm -rf ./libsodium
 
+ARG BLST_VERSION=0.3.14
+ENV BLST_VERSION=${BLST_VERSION}
+
 # install libblst
-RUN git clone https://github.com/supranational/blst  \
+RUN git clone https://github.com/supranational/blst \
   && cd blst \
-  && git checkout v0.3.14 \
+  && git checkout v${BLST_VERSION} \
   && ./build.sh \
-  && echo  '\
+  && printf "\
 prefix=/usr/local\n\
-exec_prefix=${prefix}\n\
-libdir=${exec_prefix}/lib\n\
-includedir=${prefix}/include\n\
+exec_prefix=\${prefix}\n\
+libdir=\${exec_prefix}/lib\n\
+includedir=\${prefix}/include\n\
 \n\
 Name: libblst\n\
 Description: Multilingual BLS12-381 signature library\n\
 URL: https://github.com/supranational/blst\n\
-Version: 0.3.14\n\
-Cflags: -I${includedir}\n\
-Libs: -L${libdir} -lblst\n\
-' >libblst.pc &&  ls\ 
+Version: ${BLST_VERSION}\n\
+Cflags: -I\${includedir}\n\
+Libs: -L\${libdir} -lblst\n\
+" > libblst.pc \
   && mkdir -p /usr/local/lib/pkgconfig /usr/local/lib /usr/local/include \
   && cp libblst.pc /usr/local/lib/pkgconfig/ \
-  && cp bindings/blst_aux.h bindings/blst.h bindings/blst.hpp  /usr/local/include/ \
+  && cp bindings/blst_aux.h bindings/blst.h bindings/blst.hpp /usr/local/include/ \
   && cp libblst.a /usr/local/lib \
   && cd .. && rm -rf ./blst
 
